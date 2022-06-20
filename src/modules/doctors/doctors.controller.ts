@@ -2,24 +2,28 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { Doctor } from './doctos.entity';
-import { CreateDoctorDto, UpdateDoctorDto } from './dto';
+import { CreateDoctorDto, PaginatioQueryDto, UpdateDoctorDto } from './dto';
 
 @Controller('doctors')
 export class DoctorsController {
     constructor(private readonly doctorservice: DoctorsService) { }
     @Get()
-    getDoctors(@Query() filterQurey): Promise<Doctor[]> {
-        const { name, especialidad } = filterQurey;
-        return this.doctorservice.getDoctors();
+    getDoctors(@Query() pagination: PaginatioQueryDto): Promise<Doctor[]> {
+        return this.doctorservice.getDoctors(pagination);
     }
     @Get(':id')
     getDoctor(@Param('id') id: number): Promise<Doctor> {
         return this.doctorservice.getDoctor(id);
     }
 
+    @Get('especialidad/:id_specialty')
+    getDoctorbyspecialty(@Param('id_specialty') id_specialty: number): Promise<Doctor[]> {
+        return this.doctorservice.getDoctorsbyspecialty(id_specialty);
+    }
+
+
     @Post()
     createDoctor(@Body() name: CreateDoctorDto): Promise<Doctor> {
-        console.log(name instanceof CreateDoctorDto)
         return this.doctorservice.createDoctor(name);
     }
     @Patch(':id')
